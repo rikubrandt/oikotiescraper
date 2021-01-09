@@ -1,0 +1,5 @@
+Scrape every listings from oikotie to JSON
+Location, Price, room count, squarecount, floor...
+
+
+
