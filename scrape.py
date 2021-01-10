@@ -12,7 +12,7 @@ import time
 from dotenv import load_dotenv
 import os
 # Only houses from Helsinki
-baseURL = "https://asunnot.oikotie.fi/myytavat-asunnot?pagination=1&locations=%5B%5B64,6,%22Helsinki%22%5D%5D&cardType=100"
+baseURL = "https://asunnot.oikotie.fi/myytavat-uudisasunnot?pagination=1&locations=%5B%5B65,6,%22Vantaa%22%5D%5D&cardType=200"
 
 load_dotenv()
 DRIVER_PATH = os.environ.get("DRIVER_PATH")
@@ -53,7 +53,7 @@ def scraper():
     print(houses[id])
     nextURL = soup.find('a', attrs={'analytics-click-label': 'next'})['href']
     browser.get(nextURL)
-    for i in range(0, 10):
+    for i in range(0, pages-1):
         try:
             element = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@class='button button--navigation button--small ng-scope']")))
             htmlSource = browser.page_source
@@ -71,7 +71,9 @@ def scraper():
             print(houses[id])
             nextURL = soup.find('a', attrs={'analytics-click-label': 'next'})['href']
             print(nextURL)
-            time.sleep(3)
+            
+            if(i & 5 == 0):
+                time.sleep(5)
             browser.get(nextURL)
         except Exception as e:
             print(e)
@@ -82,4 +84,5 @@ def scraper():
         json.dump(houses, outfile)
 
 
-scraper()
+if __name__ == "__main__":
+    scraper()

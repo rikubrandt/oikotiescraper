@@ -353,3 +353,11 @@
 [0110/001029.117:ERROR:exception_snapshot_win.cc(99)] thread ID 14592 not found in process
 [0110/001029.131:ERROR:process_reader_win.cc(123)] NtOpenThread: {Käyttö estetty} Prosessi pyysi objektin käyttöä, mutta käyttöoikeuksia ei ole myönnetty. (0xc0000022)
 [0110/001029.131:ERROR:exception_snapshot_win.cc(99)] thread ID 6108 not found in process
+[0110/134408.901:ERROR:process_reader_win.cc(151)] SuspendThread: Käyttö estetty. (0x5)
+[0110/134408.902:ERROR:process_reader_win.cc(151)] SuspendThread: Käyttö estetty. (0x5)
+[0110/134408.902:ERROR:process_reader_win.cc(123)] NtOpenThread: {Käyttö estetty} Prosessi pyysi objektin käyttöä, mutta käyttöoikeuksia ei ole myönnetty. (0xc0000022)
+[0110/134408.902:ERROR:exception_snapshot_win.cc(99)] thread ID 2420 not found in process
+[0110/134408.909:ERROR:process_reader_win.cc(123)] NtOpenThread: {Käyttö estetty} Prosessi pyysi objektin käyttöä, mutta käyttöoikeuksia ei ole myönnetty. (0xc0000022)
+[0110/134408.909:ERROR:exception_snapshot_win.cc(99)] thread ID 8052 not found in process
+[0110/135456.398:ERROR:directory_reader_win.cc(43)] FindFirstFile: Määritettyä polkua ei löydy. (0x3)
+[0110/154719.811:ERROR:directory_reader_win.cc(43)] FindFirstFile: Määritettyä polkua ei löydy. (0x3)
