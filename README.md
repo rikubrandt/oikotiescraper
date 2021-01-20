@@ -9,3 +9,5 @@ Change the baseURL to different location if you want.
 'python main.py'
 Check the average price per squares by running averageValueOfDistrict()
 
+### houses.json
+Scraped and cleaned houses of Vantaa.
