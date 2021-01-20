@@ -11,7 +11,8 @@ import json
 import time
 from dotenv import load_dotenv
 import os
-# Only houses from Helsinki
+
+# Only houses from Vantaa
 baseURL = "https://asunnot.oikotie.fi/myytavat-uudisasunnot?pagination=1&locations=%5B%5B65,6,%22Vantaa%22%5D%5D&cardType=200"
 
 load_dotenv()
@@ -25,11 +26,13 @@ def firstHouse():
     browser.get(baseURL)
     htmlSource = browser.page_source
     soup = BeautifulSoup(htmlSource, 'html.parser')
-    firstLink = soup.find('a', attrs={'class': 'ot-card'})['href']
-    return firstLink
+    link = soup.find('a', attrs={'class': 'ot-card'})['href']
+    return link
+
 
 def findURL(soup):
     return soup.find('a', attrs={'analytics-click-label': 'next'})['href']
+
 
 def getInfo(soup):
     values = soup.findAll('dd', attrs={'class': 'details-grid__item-value'})
@@ -47,46 +50,44 @@ def scraper():
     browser.get(firstLink)
     htmlSource = browser.page_source
     soup = BeautifulSoup(htmlSource, 'html.parser')
-    numberOfHouses = soup.find('span', attrs={'class': 'button button--navigation button--small button--navigation-muted ng-binding ng-scope'}).text
+    numberOfHouses = soup.find('span', attrs={
+                               'class': 'button button--navigation button--small button--navigation-muted ng-binding ng-scope'}).text
     ## "1 / 2000"
     pages = int(numberOfHouses[4:])
-    
+
     partUrl = firstLink.split("/")
     id = partUrl[len(partUrl)-1]
     print(id)
-    
-    getInfo(soup)
 
+    houses[id] = getInfo(soup)
     print(houses[id])
-    browser.get(findURL(soup))
+    nextURL = findURL(soup)
+    browser.get(nextURL)
     for i in range(0, pages-1):
         try:
-            element = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@class='button button--navigation button--small ng-scope']")))
+            element = WebDriverWait(browser, 10).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@class='button button--navigation button--small ng-scope']")))
             htmlSource = browser.page_source
             soup = BeautifulSoup(htmlSource, 'html.parser')
 
-            partUrl = nextURL.split("/")
-            id = partUrl[len(partUrl)-1]
-            values = soup.findAll(
-                'dd', attrs={'class': 'details-grid__item-value'})
-            valueList = []
-            for dd in values:
-                input = dd.text
-                valueList.append(input.encode("ascii", "ignore").decode())
-            houses[id] = valueList
-            print(houses[id])
-            nextURL = soup.find('a', attrs={'analytics-click-label': 'next'})['href']
-            print(nextURL)
-            
+            splitURL = nextURL.split("/")
+            id = splitURL[len(partUrl)-1]
+            houses[id] = getInfo(soup)
+            print("Scraped ", houses[id])
+            nextURL = findURL(soup)
+
+            # Slows it down so site doesn't block it.
             if(i & 5 == 0):
+                print("Sleep")
                 time.sleep(5)
+
             browser.get(nextURL)
         except Exception as e:
             print(e)
-            
 
     browser.quit()
-    with open("houses.json", 'w') as outfile:
+
+    with open("data.json", 'w') as outfile:
         json.dump(houses, outfile)
 
 

@@ -1,8 +1,0 @@
-Scrape every listings from oikotie to JSON
-Location, Price, room count, squarecount, floor...
-
-Count cheapest house compared to squares, room...
-Where are the most expensive apartments?
-€/M^2 in different parts of cities.
-
-
