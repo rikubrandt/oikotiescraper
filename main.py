@@ -1,5 +1,4 @@
 import json
-#import scrape
 import matplotlib.pyplot as plt
 
 with open("houses.json", "r") as read_file:
@@ -45,21 +44,6 @@ def averageValueOfDistrict():
     plt.bar(range(len(average)), list(average.values()), align='center')
     plt.xticks(range(len(average)), list(average.keys()), rotation=90)
     plt.show()
-
-
-
-
-
-##Poistaa vastikkeet
-def cleanJSON(data):
-    for i in data:
-        rent = data[i][1]
-        if "/ kk" in rent:
-            print(rent)
-            del (data[i][1])
-    with open('houses.json', 'w') as data_file:
-        data = json.dump(data, data_file)
-
 
 
 if __name__ == "__main__":

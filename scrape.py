@@ -1,11 +1,7 @@
-from os import getenv
 from bs4 import BeautifulSoup
-import requests
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC, wait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import json
 import time
@@ -44,6 +40,17 @@ def getInfo(soup):
     return valueList
 
 
+# Deletes the maintenance charges since not all houses have these.
+def cleanJSON(data):
+    for i in data:
+        rent = data[i][1]
+        if "/ kk" in rent:
+            print(rent)
+            del (data[i][1])
+    with open('houses.json', 'w') as data_file:
+        data = json.dump(data, data_file)
+
+
 def scraper():
     houses = {}
     firstLink = firstHouse()
@@ -57,7 +64,6 @@ def scraper():
 
     partUrl = firstLink.split("/")
     id = partUrl[len(partUrl)-1]
-    print(id)
 
     houses[id] = getInfo(soup)
     print(houses[id])
