@@ -21,38 +21,44 @@ DRIVER_PATH = os.environ.get("DRIVER_PATH")
 browser = webdriver.Chrome(DRIVER_PATH)
 
 
-def firstHouseUrl():
+def firstHouse():
     browser.get(baseURL)
     htmlSource = browser.page_source
     soup = BeautifulSoup(htmlSource, 'html.parser')
     firstLink = soup.find('a', attrs={'class': 'ot-card'})['href']
     return firstLink
 
+def findURL(soup):
+    return soup.find('a', attrs={'analytics-click-label': 'next'})['href']
 
-def scraper():
-    houses = {}
-    firstLink = firstHouseUrl()
-    browser.get(firstLink)
-    htmlSource = browser.page_source
-    soup = BeautifulSoup(htmlSource, 'html.parser')
-    numberOfHouses = soup.find('span', attrs={'class': 'button button--navigation button--small button--navigation-muted ng-binding ng-scope'}).text
-    ## "1 / 2000"
-    pages = int(numberOfHouses[4:])
-    print(pages)
-    partUrl = firstLink.split("/")
-    id = partUrl[len(partUrl)-1]
-    print(id)
+def getInfo(soup):
     values = soup.findAll('dd', attrs={'class': 'details-grid__item-value'})
     ##Hinta, vastike, neliöt, huonekpl, kerros, rakennusvuosi, Rak.Tyyppi, Kaupunginosa, Kaupunki
     valueList = []
     for dd in values:
         input = dd.text
         valueList.append(input.encode("ascii", "ignore").decode())
+    return valueList
 
-    houses[id] = valueList
+
+def scraper():
+    houses = {}
+    firstLink = firstHouse()
+    browser.get(firstLink)
+    htmlSource = browser.page_source
+    soup = BeautifulSoup(htmlSource, 'html.parser')
+    numberOfHouses = soup.find('span', attrs={'class': 'button button--navigation button--small button--navigation-muted ng-binding ng-scope'}).text
+    ## "1 / 2000"
+    pages = int(numberOfHouses[4:])
+    
+    partUrl = firstLink.split("/")
+    id = partUrl[len(partUrl)-1]
+    print(id)
+    
+    getInfo(soup)
+
     print(houses[id])
-    nextURL = soup.find('a', attrs={'analytics-click-label': 'next'})['href']
-    browser.get(nextURL)
+    browser.get(findURL(soup))
     for i in range(0, pages-1):
         try:
             element = WebDriverWait(browser, 10).until(EC.presence_of_element_located((By.XPATH, "//*[@class='button button--navigation button--small ng-scope']")))
